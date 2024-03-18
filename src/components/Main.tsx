@@ -131,7 +131,17 @@ const Main = () => {
                           fullWidth 
                           label="Search to find images!" 
                           inputProps={{ style: { color: '#fff' }}}
-                          InputProps={{ style: {borderRadius: '0px' }}}
+                          InputProps={{ 
+                            style: {borderRadius: '0px' }, 
+                            endAdornment: searchQuery.length > 0 
+                            ? (<IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => {setSearchQuery("")}}
+                                    edge="end"
+                                >
+                                <CloseIcon style={{ color: '#fff'}} />
+                              </IconButton>) 
+                            : undefined}}
                           InputLabelProps={{
                             style: { color: '#fff' },
                           }}
