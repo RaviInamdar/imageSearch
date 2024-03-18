@@ -9,41 +9,32 @@ function App() {
   // data state that we will touch in application
   const [imageData, setImageData] = useState([]);
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // react context from where we will pull the data
-  const value = {imageData, input, setImageData, setInput};
+  const value = {imageData, input, loading, setLoading, setImageData, setInput};
+
 
   // initial call that fetches data
   useEffect(() => {
-    fetch('https://api.imgur.com/3/gallery/search/?q=cats', {
-      mode: 'cors',
-      headers: {
-        "Authorization": "Client-ID b067d5cb828ec5a",
-      },
-    }).then(response => response.json())
-      .then(responseData => {
-        setImageData(responseData.data);
-      }).catch(error => {
-        console.log("error in fetching images", error);
-      });
+    try {
+      setLoading(true);
+      fetch('https://api.imgur.com/3/gallery/search/?q=cats', {
+        mode: 'cors',
+        headers: {
+          "Authorization": "Client-ID b067d5cb828ec5a",
+        },
+      }).then(response => response.json())
+        .then(responseData => {
+          setImageData(responseData.data);
+          setLoading(false);
+        });
+    } catch(error) {
+      setLoading(false);
+      console.log('error in loading initial data', error);
+    }
 
   },[]);
-  
-  // call that updates when we update query string
-  const updateQuery = (input) => {
-    fetch(`https://api.imgur.com/3/gallery/search/?q=${input}`, {
-      mode: 'cors',
-      headers: {
-        "Authorization": "Client-ID b067d5cb828ec5a",
-      },
-    }).then(response => response.json())
-      .then(responseData => {
-        setImageData(responseData.data);
-      }).catch(error => {
-        console.log("error in fetching images", error);
-      });
-
-  };
 
   return (
     <>
