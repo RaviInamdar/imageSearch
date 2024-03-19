@@ -64,16 +64,18 @@ const Main = () => {
                         >
                         <CloseIcon />
                         </IconButton>
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                        <Typography sx={{ marginLeft: '40%' }} variant="h6" component="div">
                             Click To {zoomIn ? 'Zoom Out' : 'Zoom In'}
                         </Typography>
+                        {/* 
+                         for save functionality to add in future
                         <Button 
                             autoFocus 
                             color="inherit" 
                             onClick={() => { setDialogOpen(false);}}
                         >
                             save
-                        </Button>
+                        </Button> */}
                     </Toolbar>
                 </AppBar>
                 <div style={{display: 'flex', width: '100%', justifyContent: 'center'}}>

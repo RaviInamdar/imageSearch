@@ -24,10 +24,25 @@ const Header = ({handleClear, handleClick, searchQuery, setSortBy, setTopPosts, 
     return(
         <AppBar>
         <Toolbar style={{ justifyContent: 'center' }}>
-            <div style={{ display: 'flex', width: '75%', justifyContent: 'space-between', flexDirection: 'row', marginTop: '10px'}}>
+            <div style={{ 
+                display: 'flex', 
+                width: '75%', 
+                justifyContent: 
+                'space-between', 
+                flexDirection: 'row', 
+                marginTop: '10px'
+            }}>
                 <Button 
                     variant="contained" 
-                    sx={{ color: '#fff', marginBottom: '8px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderTopLeftRadiuss: '8px', borderBottomLeftRadius: '8px' }} 
+                    sx={{ 
+                        color: '#fff', 
+                        marginBottom: '8px', 
+                        borderTopRightRadius: '0px', 
+                        borderBottomRightRadius: '0px', 
+                        borderTopLeftRadiuss: '8px', 
+                        borderBottomLeftRadius: '8px',
+                        minWidth: '100px',
+                    }} 
                     onClick={() => {handleClear()}}>
                     Refresh  <RefreshIcon />
                 </Button>
@@ -70,7 +85,15 @@ const Header = ({handleClear, handleClick, searchQuery, setSortBy, setTopPosts, 
                     variant="contained" 
                     onClick={handleClick} 
                     disabled={searchQuery.length < 1}
-                    sx={{ color: '#fff', marginBottom: '8px', borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px', borderTopRightRadius: '8px', borderBottomRightRardius: '8px' }}
+                    sx={{ 
+                        color: '#fff', 
+                        marginBottom: '8px', 
+                        borderTopLeftRadius: '0px', 
+                        borderBottomLeftRadius: '0px', 
+                        borderTopRightRadius: '8px', 
+                        borderBottomRightRardius: '8px',
+                        minWidth: '100px',
+                    }}
                 >
                     <SearchIcon/> Search
                 </Button>
