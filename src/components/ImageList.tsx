@@ -14,6 +14,7 @@ const ImageList = ({handleClear, setSelectedImage, setDialogOpen}: ImageListProp
     const {imageData} = useContext(ImageContext);
     const {initialLoad, loading} = useImages();
 
+    // handles infinite scroll render
     const itemsPerPage = 20;
     const [hasMore, setHasMore] = useState(true);
     const [records, setrecords] = useState(itemsPerPage);

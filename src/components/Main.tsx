@@ -65,7 +65,7 @@ const Main = () => {
                         <CloseIcon />
                         </IconButton>
                         <Typography sx={{ marginLeft: '40%' }} variant="h6" component="div">
-                            Click To {zoomIn ? 'Zoom Out' : 'Zoom In'}
+                            Click Image To {zoomIn ? 'Zoom Out' : 'Zoom In'}
                         </Typography>
                         {/* 
                          for save functionality to add in future
