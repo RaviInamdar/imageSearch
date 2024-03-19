@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import ImageContext from "../store/ImageContext";
 
-
 interface SearchProps {
     searchString: string;
     sort?: string;

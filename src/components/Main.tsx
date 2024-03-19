@@ -1,5 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
-import ImageContext from "../store/ImageContext";
+import React, { useState, useRef } from "react";
 import { Button, Slide, AppBar, Toolbar, Dialog, Typography, IconButton } from "@mui/material";
 import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
@@ -24,13 +23,14 @@ interface SearchProps {
 
 const Main = () => {
     // initialize values 
-    const {dialogOpen, setDialogOpen} = useContext(ImageContext);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const textRef = useRef(null);
     const [sortBy, setSortBy] = useState('time');
     const [topPosts, setTopPosts] = useState('all');
     const [zoomIn, setZoomIn] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+
 
     // inject from hook
     const { updateQuery } = useImages();
@@ -103,6 +103,7 @@ const Main = () => {
                 topPosts={topPosts} 
             />
             <ImageList 
+                setDialogOpen={setDialogOpen}
                 handleClear={handleClear} 
                 setSelectedImage={setSelectedImage} 
             />

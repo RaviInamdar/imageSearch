@@ -7,10 +7,11 @@ import InfiniteScroll from "react-infinite-scroller";
 interface ImageListProps {
     handleClear: () => void;
     setSelectedImage: (item) => void;
+    setDialogOpen: (item) => void;
 }
 
-const ImageList = ({handleClear, setSelectedImage}: ImageListProps ) => {
-    const {setDialogOpen, imageData} = useContext(ImageContext);
+const ImageList = ({handleClear, setSelectedImage, setDialogOpen}: ImageListProps ) => {
+    const {imageData} = useContext(ImageContext);
     const {initialLoad, loading} = useImages();
 
     const itemsPerPage = 20;
