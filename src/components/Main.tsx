@@ -1,10 +1,11 @@
 import React, { useContext, useState, useRef } from "react";
 import ImageContext from "../store/ImageContext";
-import { Button, ImageList, Slide, CircularProgress, ImageListItem, AppBar, Toolbar, TextField, Dialog, Typography, IconButton, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Button, Slide, AppBar, Toolbar, Dialog, Typography, IconButton } from "@mui/material";
 import { TransitionProps } from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SearchIcon from '@mui/icons-material/Search';
+import { useImages } from "../hooks/images.hooks.ts";
+import ImageList from "./ImageList.tsx";
+import Header from "./Header.tsx";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -22,45 +23,18 @@ interface SearchProps {
 };
 
 const Main = () => {
-    const {imageData, loading, setLoading, setImageData} = useContext(ImageContext);
+    // initialize values 
+    const {dialogOpen, setDialogOpen} = useContext(ImageContext);
     const textRef = useRef(null);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState('');
     const [sortBy, setSortBy] = useState('time');
     const [topPosts, setTopPosts] = useState('all');
     const [zoomIn, setZoomIn] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // call that updates when we update query string
-    const updateQuery = ({searchString, sort, window}: SearchProps) => {
-        try {
-            setLoading(true);
+    // inject from hook
+    const { updateQuery } = useImages();
 
-            // update endpoint URL based on what information we have
-            let endpoint = 'https://api.imgur.com/3/gallery/search/?q=cats';
-            if (searchString !== ''){
-                if (sort === 'top') {
-                    endpoint = `https://api.imgur.com/3/gallery/search/${sort}/${window}?q=${searchString}`;
-                } else {
-                    endpoint = `https://api.imgur.com/3/gallery/search/${sort}/?q=${searchString}`
-                }
-            }
-
-            fetch(endpoint, {
-            mode: 'cors',
-            headers: {
-                "Authorization": "Client-ID b067d5cb828ec5a",
-            },
-            }).then(response => response.json())
-            .then(responseData => {
-                setImageData(responseData.data);
-                setLoading(false);
-            });
-        } catch (error) {
-            setLoading(false);
-            console.log('error in updating data', error);
-        }
-    };
     const handleClear = () => {
         // reset to originals and run query
         setSearchQuery("");
@@ -117,153 +91,21 @@ const Main = () => {
                 />
                 </div>
             </Dialog>
-            <AppBar>
-                <Toolbar style={{ justifyContent: 'center' }}>
-                    <div style={{ display: 'flex', width: '75%', justifyContent: 'space-between', flexDirection: 'row', marginTop: '10px'}}>
-                        <Button 
-                            variant="contained" 
-                            disabled={!searchQuery || searchQuery.length < 1}
-                            sx={{ color: '#fff', marginBottom: '8px', borderTopRightRadius: '0px', borderBottomRightRadius: '0px', borderTopLeftRadiuss: '8px', borderBottomLeftRadius: '8px' }} 
-                            onClick={() => {handleClear()}}>
-                            Refresh  <RefreshIcon />
-                        </Button>
-                        <TextField 
-                          fullWidth 
-                          label="Search to find images!" 
-                          inputProps={{ style: { color: '#fff' }}}
-                          InputProps={{ 
-                            style: {borderRadius: '0px' }, 
-                            endAdornment: searchQuery.length > 0 
-                            ? (<IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={() => {setSearchQuery("")}}
-                                    edge="end"
-                                >
-                                <CloseIcon style={{ color: '#fff'}} />
-                              </IconButton>) 
-                            : undefined}}
-                          InputLabelProps={{
-                            style: { color: '#fff' },
-                          }}
-                          inputRef={textRef} 
-                          onChange={() => {
-                            setSearchQuery(textRef.current?.value);
-                          }}
-                          onKeyDown={(event) => {
-                            if(event.key === 'Enter') {
-                              handleClick();
-                            }
-                          }}
-                          sx={{  
-                            input: {
-                                color: "#fff",
-                            }
-                          }}
-                          value={searchQuery}
-                          variant="outlined"
-                        />
-                        <Button 
-                            variant="contained" 
-                            onClick={handleClick} 
-                            disabled={searchQuery.length < 1}
-                            sx={{ color: '#fff', marginBottom: '8px', borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px', borderTopRightRadius: '8px', borderBottomRightRardius: '8px' }}
-                        >
-                            <SearchIcon/> Search
-                        </Button>
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                            <InputLabel id="sort-by-label" sx={{ color: '#fff' }}>Sort By</InputLabel>
-                            <Select
-                                labelId="sort-by-label"
-                                id="sort-by-dropdown"
-                                value={sortBy}
-                                onChange={(e) => {
-                                    setSortBy(e.target.value);
-                                    updateQuery({searchString: searchQuery, sort: e.target.value, window: topPosts});
-                                }}
-                                label="Sort By"
-                                sx={{ color: '#fff' }}
-                            >
-                                <MenuItem value={'time'}>Time</MenuItem>
-                                <MenuItem value={'viral'}>Most Viral</MenuItem>
-                                <MenuItem value={'top'}>Top</MenuItem>
-                            </Select>
-                        </FormControl>
-                        {sortBy === 'top' && (
-                            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                <InputLabel id="top-posts-label" sx={{ color: '#fff' }}>Top Posts Of:</InputLabel>
-                                <Select
-                                    labelId="top-posts-label"
-                                    id="top-posts-dropdown"
-                                    value={topPosts}
-                                    onChange={(e) => {
-                                        setTopPosts(e.target.value);
-                                        updateQuery({searchString: searchQuery, sort: sortBy, window: e.target.value});
-                                    }}
-                                    label="Top Posts Of:"
-                                    sx={{ color: '#fff' }}
-                                >
-                                    <MenuItem value={'day'}>Day</MenuItem>
-                                    <MenuItem value={'week'}>Week</MenuItem>
-                                    <MenuItem value={'month'}>Month</MenuItem>
-                                    <MenuItem value={'year'}>Year</MenuItem>
-                                    <MenuItem value={'all'}>All Time</MenuItem>
-                                </Select>
-                            </FormControl>
-                        )}
-                    </div>
-                </Toolbar>
-            </AppBar>
-            <div style={{ display: 'flex', width: '75%', marginTop: '75px'}}>
-                {!loading ? (
-                <ImageList variant="masonry" cols={3} gap={8}>
-                  {imageData.length > 0 ? imageData.map((item: any) => {
-                    if (item.images_count > 0) {
-                        return item.images.map((image) => {
-                            return (
-                                <ImageListItem key={image.id}>
-                                    // need to filter out videos for image-only processing
-                                    {image.type !== 'video/mp4' && (
-                                        <img
-                                            srcSet={`${image.link}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                                            src={`${image.link}?w=248&fit=crop&auto=format`}
-                                            alt={item.title}
-                                            loading="lazy"
-                                            onClick={() => {
-                                                setDialogOpen(true);
-                                                setSelectedImage(image.link);
-                                            }}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                    )}
-                                </ImageListItem>
-                            );
-                        })
-                    }
-                  }) :  (
-                    <div style={{paddingTop: '100px'}}> 
-                        <div style={{ display: 'flex', height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center'}}>
-                        </div>
-                        <Button 
-                            variant="text"
-                            style={{ padding: '50px' }}
-                            onClick={() => {
-                                handleClear();
-                            }}
-                        >
-                            No results found. Click to clear search and try again
-                        </Button>
-                        <div style={{ display: 'flex', height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: '100px'}}>
-                        </div>
-                    </div>
-                  )}
-                </ImageList>) 
-                : (
-                <div style={{ display: 'flex', height: '100%', width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: '100px'}}>
-                    <CircularProgress />
-                </div>
-                )}
-
-            </div>
+            <Header 
+                handleClear={handleClear} 
+                handleClick={handleClick} 
+                searchQuery={searchQuery} 
+                setSortBy={setSortBy} 
+                setTopPosts={setTopPosts} 
+                setSearchQuery={setSearchQuery} 
+                textRef={textRef} 
+                sortBy={sortBy} 
+                topPosts={topPosts} 
+            />
+            <ImageList 
+                handleClear={handleClear} 
+                setSelectedImage={setSelectedImage} 
+            />
         </div>
     );
 }
